@@ -1,0 +1,230 @@
+#math imports
+from random import random
+from math import radians, degrees, atan2, sqrt
+
+import copy
+
+#blender imports
+import mathutils
+from mathutils import Quaternion, Vector
+import bpy
+
+
+"""
+TURTLE SYMBOLS
+
+!(w): Set turtle width to w.
+F(l) Move turtle forward by l .
+% Close end of branch, taper to 0 radius.
++(a) Turn turtle left by a.
+-(a) Turn turtle right by a.
+&(a) Pitch turtle down by a.
+^(a) Pitch turtle up by a.
+/(a) Roll turtle right by a.
+n(a) Roll turtle left by a.
+[ Start branch.
+] End branch.
+$ Reset turtle to vertical
+"""
+
+def genSeq(itr, a, w):
+    #generate sequence that will move the turtle
+    #commands are in the form of a tuples list tuple("symbol",value1, value2,...)
+    #ex: ("^",45)
+    
+    lsys = []
+    
+    #AXIOM
+    lsys.append(("F",w))
+    res = []
+    
+    #REWRITING
+    #repat itr times, changing the values
+    for num in range(itr):
+        for x in lsys:
+            if(x[0] == "F"):
+                res += [("F", w), ("["), ("+", a), ("F", w), ("]"), ("F", w), ("["), ("-", a), ("F", w), ("]"), ("F", w)]
+            else:
+                res += x[0]
+        lsys = copy.deepcopy(res)
+        res = []
+
+    print(len(lsys))
+
+def parser(seq):
+    
+
+
+
+genSeq(2, 45, 10)
+
+class Turtle(object):
+    #perform the turtle movements
+    
+    #attributes of Turtele class
+    dir = Vector([0.0, 0.0, 1.0])
+    pos = Vector([0.0, 0.0, 0.0])
+    right = Vector([-1.0, 0.0, 0.0])
+    width = 0.0
+    
+    def __str__(self):
+        return 'Turtle at %s, direction %s, right %s' % (self.pos, self.dir, self.right)
+    
+    def __init__(self, dir, pos, right, width):
+        self.dir = dir
+        self.pos = pos
+        self.right = right
+        self.width = width
+      
+    def yaw(self, ang):
+        #positive angle moves to the right
+        axis  = self.dir.cross(self.right)
+        axis.normalize()
+        
+        rot = Quaternion(axis, radians(ang))
+        
+        self.dir.rotate(rot)
+        self.dir.normalize()
+        self.right.rotate(rot)
+        self.right.normalize()
+        
+    def pitch(self, ang):
+        #positive angle rises turtle's nose
+        self.dir.rotate(Quaternion(self.right, radians(ang)))
+        self.dir.normalize()
+        
+    def roll(self, ang):
+        #positive angle
+        self.right.rotate(Quaternion(self.dir, radians(ang)))
+        self.right.normalize()
+        
+    def move(self, step):
+        #move the turtle forward
+        self.pos += self.dir * step
+
+    def setWidth(self, width):
+        self.width = width
+    
+    def copy(self):
+        return Turtle(self.dir, self.pos, self.right, self.width)
+ 
+
+
+class Branch(object):
+    #attributes
+    polyline = None
+    start = Vector([0,0,0])
+    turtle = None
+    curve = None
+    
+    def __init__(self, curve, turtle):
+        self.polyline = curve.splines.new('BEZIER')
+        self.curve = curve
+        self.turtle = copy.deepcopy(turtle)
+        self.start = self.turtle.pos
+        self.polyline.bezier_points[0].co = self.start
+        
+        self.polyline.bezier_points[0].radius = self.turtle.width
+        
+        
+class Tree(object):
+    #stack to put the branches
+    stack = []
+    curve = None
+    obj = None
+    #main Branch object
+    stem = None
+      
+    def __init__(self, turtle):
+        
+        #create and bevel the curve
+        self.curve = bpy.data.curves.new(name = "Tree",type='CURVE')
+        self.curve.dimensions = '3D'
+        self.curve.fill_mode = 'FULL'
+        self.curve.bevel_depth = 0.045     
+    
+        #link the object to the scene
+        self.obj = bpy.data.objects.new("Tree"+"Obj", self.curve)
+        bpy.context.scene.collection.objects.link(self.obj)
+        
+        #create first branch and push into the stack
+        self.stack.append(Branch(self.curve, turtle))
+        self.stem = self.stack[0]
+        
+        
+    def move(self, step):
+        #move turtle
+        self.stem.turtle.move(step)
+        
+        #add new point
+        self.stem.polyline.bezier_points.add(1)
+        self.stem.polyline.bezier_points[-1].co = self.stem.turtle.pos
+        
+        #handles direction tangent to the curve
+        self.stem.polyline.bezier_points[-1].handle_left = self.stem.turtle.pos - self.stem.turtle.dir
+        self.stem.polyline.bezier_points[-1].handle_right = self.stem.turtle.pos + self.stem.turtle.dir
+        
+        #set the curve radius to be the turtle's width
+        self.stem.polyline.bezier_points[-1].radius = self.stem.turtle.width
+        
+    def pitch(self, ang):
+        
+        self.stem.polyline.bezier_points[-1].handle_right= self.stem.turtle.pos + self.stem.turtle.dir
+        #pitch the turtle
+        self.stem.turtle.pitch(ang)
+        self.stem.polyline.bezier_points[-1].handle_left = self.stem.turtle.pos - self.stem.turtle.dir
+        
+    def roll(self, ang):
+        #roll the turtle
+        self.stem.turtle.roll(ang)
+        
+    def yaw(self, ang):
+        #yaw the turtle
+        self.stem.turtle.yaw(ang)
+        
+    def fork(self):
+        #create new branch and push into the stack
+        self.stack.append(Branch(self.curve, self.stem.turtle))
+        #subscribe stem attribute with a new branch starting from the last vertex
+        self.stem = self.stack[-1]
+        
+        
+    def closeBranch(self):
+        #set the radius to 0
+        self.stem.polyline.bezier_points[-1].radius = 0
+        #pop out of the stack
+        self.stack.pop()
+        #subscribe stem attribute with the previous branch
+        self.stem = self.stack[-1]
+ 
+        
+    
+
+
+
+
+
+dir = mathutils.Vector([0.0, 0.0, 1.0])
+pos = mathutils.Vector([0.0, 0.0, 0.0])
+left = mathutils.Vector([-1.0, 0.0, 0.0])
+width = 10
+tt = Turtle(dir, pos, left, width)
+tr = Tree(Turtle(dir, pos, left, width))
+tr.move(10)
+tr.move(10)
+
+print(tr.stack[0].turtle)
+
+tr.fork()
+tr.pitch(-45)
+
+print(tr.stack[0].turtle)
+print(tr.stack[1].turtle == tr.stack[0].turtle)
+tr.move(10)
+tr.move(10)
+
+
+tr.closeBranch()
+
+tr.move(10)
+tr.move(10)
