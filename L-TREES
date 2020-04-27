@@ -9,55 +9,6 @@ import mathutils
 from mathutils import Quaternion, Vector
 import bpy
 
-
-"""
-TURTLE SYMBOLS
-
-!(w): Set turtle width to w.
-F(l) Move turtle forward by l .
-% Close end of branch, taper to 0 radius.
-+(a) Turn turtle left by a.
--(a) Turn turtle right by a.
-&(a) Pitch turtle down by a.
-^(a) Pitch turtle up by a.
-/(a) Roll turtle right by a.
-n(a) Roll turtle left by a.
-[ Start branch.
-] End branch.
-$ Reset turtle to vertical
-"""
-
-def genSeq(itr, a, w):
-    #generate sequence that will move the turtle
-    #commands are in the form of a tuples list tuple("symbol",value1, value2,...)
-    #ex: ("^",45)
-    
-    lsys = []
-    
-    #AXIOM
-    lsys.append(("F",w))
-    res = []
-    
-    #REWRITING
-    #repat itr times, changing the values
-    for num in range(itr):
-        for x in lsys:
-            if(x[0] == "F"):
-                res += [("F", w), ("["), ("+", a), ("F", w), ("]"), ("F", w), ("["), ("-", a), ("F", w), ("]"), ("F", w)]
-            else:
-                res += x[0]
-        lsys = copy.deepcopy(res)
-        res = []
-
-    print(len(lsys))
-
-def parser(seq):
-    
-
-
-
-genSeq(2, 45, 10)
-
 class Turtle(object):
     #perform the turtle movements
     
@@ -94,7 +45,7 @@ class Turtle(object):
         self.dir.normalize()
         
     def roll(self, ang):
-        #positive angle
+        #positive angle turn right
         self.right.rotate(Quaternion(self.dir, radians(ang)))
         self.right.normalize()
         
@@ -104,6 +55,10 @@ class Turtle(object):
 
     def setWidth(self, width):
         self.width = width
+        
+    def resetVertical(self):
+           self.dir = Vector([0.0, 0.0, 1.0]) 
+           self.right = Vector([-1.0, 0.0, 0.0])
     
     def copy(self):
         return Turtle(self.dir, self.pos, self.right, self.width)
@@ -125,6 +80,9 @@ class Branch(object):
         self.polyline.bezier_points[0].co = self.start
         
         self.polyline.bezier_points[0].radius = self.turtle.width
+        
+        self.polyline.bezier_points[0].handle_left = self.turtle.pos
+        self.polyline.bezier_points[0].handle_right = self.turtle.pos
         
         
 class Tree(object):
@@ -149,7 +107,14 @@ class Tree(object):
         
         #create first branch and push into the stack
         self.stack.append(Branch(self.curve, turtle))
+        
+        #set the handles to the turtles point
+        self.stack[0].polyline.bezier_points[0].handle_left = self.stack[0].turtle.pos
+        self.stack[0].polyline.bezier_points[0].handle_right = self.stack[0].turtle.pos
+        
         self.stem = self.stack[0]
+        
+        
         
         
     def move(self, step):
@@ -168,26 +133,40 @@ class Tree(object):
         self.stem.polyline.bezier_points[-1].radius = self.stem.turtle.width
         
     def pitch(self, ang):
-        
+        #set handle to be tangent to the segment
         self.stem.polyline.bezier_points[-1].handle_right= self.stem.turtle.pos + self.stem.turtle.dir
+        
         #pitch the turtle
         self.stem.turtle.pitch(ang)
+        
+        #set handle to be tangent to the segment
         self.stem.polyline.bezier_points[-1].handle_left = self.stem.turtle.pos - self.stem.turtle.dir
         
     def roll(self, ang):
+        #set handle to be tangent to the segment
+        self.stem.polyline.bezier_points[-1].handle_right= self.stem.turtle.pos + self.stem.turtle.dir
+        
         #roll the turtle
         self.stem.turtle.roll(ang)
         
+        #set handle to be tangent to the segment
+        self.stem.polyline.bezier_points[-1].handle_left = self.stem.turtle.pos - self.stem.turtle.dir
+        
     def yaw(self, ang):
+        #set handle to be tangent to the segment
+        self.stem.polyline.bezier_points[-1].handle_right= self.stem.turtle.pos + self.stem.turtle.dir
+        
         #yaw the turtle
         self.stem.turtle.yaw(ang)
+        
+        #set handle to be tangent to the segment
+        self.stem.polyline.bezier_points[-1].handle_left = self.stem.turtle.pos - self.stem.turtle.dir
         
     def fork(self):
         #create new branch and push into the stack
         self.stack.append(Branch(self.curve, self.stem.turtle))
         #subscribe stem attribute with a new branch starting from the last vertex
         self.stem = self.stack[-1]
-        
         
     def closeBranch(self):
         #set the radius to 0
@@ -196,9 +175,166 @@ class Tree(object):
         self.stack.pop()
         #subscribe stem attribute with the previous branch
         self.stem = self.stack[-1]
- 
         
+    def setW(self, width):
+        #set the curve radius at turtle location
+        self.stem.polyline.bezier_points[-1].radius = width
+        self.stem.turtle.setWidth(width)
+        
+    def resetOrientation(self):
+        #set handle to be tangent to the segment
+        self.stem.polyline.bezier_points[-1].handle_right= self.stem.turtle.pos + self.stem.turtle.dir
+        
+        #reset orientation of turtle
+        self.stem.turtle.resetVertical()
+        
+        #set handle to be tangent to the segment
+        self.stem.polyline.bezier_points[-1].handle_left = self.stem.turtle.pos - self.stem.turtle.dir
+        
+   
+   
+   
     
+"""
+TURTLE SYMBOLS
+
+!(w) Set turtle width to w.
+F(l) Move turtle forward by l .
++(a) Turn turtle left by a.
+-(a) Turn turtle right by a.
+&(a) Pitch turtle down by a.
+^(a) Pitch turtle up by a.
+/(a) Roll turtle right by a.
+n(a) Roll turtle left by a.
+[(0) Start branch.
+](0) End branch.
+$ Reset turtle to vertical
+Q(w,l) Auxiliary symbol to branches: move l and set width to w
+A(w,l) Auxiliary symbol to twigs: move l and set width to w
+"""
+
+def genSimpleSeq(itr, a, w):
+    #simple 2d tree
+    
+    #generate sequence that will move the turtle
+    #commands are in the form of a tuples list tuple("symbol",[value1, value2,...])
+    #list of commands in the form of [("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[])] 
+    #ex: ("^",[45])
+    
+    lsys = []
+    
+    #AXIOM
+    lsys.append(("F",[w]))
+    res = []
+    
+    #REWRITING
+    #repat itr times, changing the values
+    for num in range(itr):
+        for x in lsys:
+            #REWRITE RULES:
+            if(x[0] == "F"):
+                res += [("F", [w]), ("[",[]), ("+", [a]), ("F", [w]), ("]",[]), ("F", [w]), ("[",[]), ("-", [a]), ("F", [w]), ("]",[]), ("F", [w])]
+            
+            else:
+                res += [(x[0],x[1])]
+            ##      
+        lsys = copy.deepcopy(res)
+        res = []
+    return lsys
+
+def genSeq(itr, ang, base_w):
+    #generate sequence that will move the turtle
+    #commands are in the form of a tuples list tuple("symbol",[value1, value2,...])
+    #list of commands in the form of [("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[])] 
+    #ex: ("^",[45])
+    
+    lsys = []
+    
+    #AXIOM
+    lsys.extend([("F", [0.5]) , ("!",[base_w]), ("/",[45]), ("Q",[base_w, 0.5])])
+    res = []
+    
+    #REWRITING
+    #repat itr times, changing the values
+    for num in range(itr):
+        for x in lsys:
+            #REWRITE RULES:
+            
+            #REWRITE RULE FOR Q
+            if(x[0] == "Q"):
+                #pick parameters
+                w = x[1][0]
+                l = x[1][1]
+            
+                #rewrite
+                res += [("/", [75]), ("&",[ang]), ("!", [0.2*w]), ("[", []), ("A",[0.3*w, 1.5*sqrt(w)*0.9]), ("]", []), 
+                        ("!",[w]), ("^", [ang]), ("F", [l]), ("Q",[max(0,(w-base_w)/14), l]), ("F", [w])]
+            
+            #REWRITE RULE FOR A
+            elif(x[0] == "A"):
+                #pick parameters
+                w = x[1][0]
+                l = x[1][1]
+                w_d = w/22
+                wid = w - num/(w_d + 1)
+        
+                #rewrite
+                res += [("!", [wid]), ("F",[l/3]), ("/", [140]), ("&", [ang]), ("!",[0.3*wid]), ("[", []), 
+                        ("F",[0.75*sqrt(22-num)*l/3]), ("^", [20]), ("F", [0.75*sqrt(22-num)*l/3]), 
+                        ("]",[]), ("!", [wid]), ("^",[ang]), ("n",[140]), ("^",[1.2])]
+            
+            else:
+                res += [(x[0],x[1])]
+            ##      
+        lsys = copy.deepcopy(res)
+        res = []
+    return lsys
+
+
+def parser(seq, tree):
+    #transform sequence in steps
+    for x in seq:
+        ##interpreter rules
+        
+        if(x[0] == "!"): tree.setW(x[1][0])
+        
+        elif(x[0] == "F"): tree.move(x[1][0])
+        
+        elif(x[0] == "+"): tree.yaw((-1)*x[1][0])
+        
+        elif(x[0] == "-"): tree.yaw(x[1][0])
+        
+        elif(x[0] == "&"): tree.pitch((-1)*x[1][0])
+        
+        elif(x[0] == "^"): tree.pitch(x[1][0])
+        
+        elif(x[0] == "/"): tree.roll(x[1][0])
+        
+        elif(x[0] == "n"): tree.roll((-1)*x[1][0])
+        
+        elif(x[0] == "["): tree.fork()
+        
+        elif(x[0] == "]"): tree.closeBranch()
+        
+        elif(x[0] == "$"): tree.resetOrientation()
+        
+        elif(x[0] == "Q"): tree.setW(x[1][0]); tree.move(x[1][1])
+        
+        elif(x[0] == "A"): tree.setW(x[1][0]); tree.move(x[1][1])
+        
+        
+
+    
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -210,21 +346,21 @@ left = mathutils.Vector([-1.0, 0.0, 0.0])
 width = 10
 tt = Turtle(dir, pos, left, width)
 tr = Tree(Turtle(dir, pos, left, width))
+#parser(genSeq(0, 22.5, 10), tr)
+
 tr.move(10)
 tr.move(10)
 
-print(tr.stack[0].turtle)
 
-tr.fork()
 tr.pitch(-45)
+tr.fork()
 
-print(tr.stack[0].turtle)
-print(tr.stack[1].turtle == tr.stack[0].turtle)
+print(tr.stack[1].polyline.bezier_points[0].handle_right)
+
+
 tr.move(10)
 tr.move(10)
 
 
 tr.closeBranch()
 
-tr.move(10)
-tr.move(10)
