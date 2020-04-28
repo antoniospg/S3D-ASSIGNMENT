@@ -1,3 +1,8 @@
+# L-Trees
+A simple 3d L-System that can easily generate trees and bushes
+
+![Overview](img/ovw.png)
+
 ## Welcome to GitHub Pages
 
 You can use the force [editor on GitHub](https://github.com/antoniospg/S3D-ASSINGMENT/edit/gh-pages/README.md) to maintain and preview the content for your website in Markdown files.
