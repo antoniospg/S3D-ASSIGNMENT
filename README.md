@@ -25,7 +25,7 @@ The fisrt section is dedicated to describe the procedural rules to generate the 
 The common base of every system is to define a grammar G = (V, ω, P), where V is a set of symbols that can and cannot be replaced, ω (axiom) is the first sequence of symbols from V and P is the set of rules that rewrite a symbol of V for a sequence of symbols. The sequence starts as a string defined by ω and after each iteration the symbols of that string are replaced according to the rules defined in P.
 This string can be interpreted as a sequence of commands to a turtle, who will move across the screen, drawing the tree. The code bellow shows the rules for the seaweed model shown in the title.
 
-'''
+'''markdown
 Axiom: F
 Rules: (F->FF+[^F&F&F]-[&F^F^F]n[&f&f^f]) 
 ''' 
@@ -46,7 +46,7 @@ Obs: Note that in this grammar a and l are default values.
 
 
 <div style="float: right">
-    ![Generation](img/gif.gif)
+    ![Generation](img/gif.gif "TT")
 This is the base for the generation of the tree, each model has it's own grammar, with it's own parameters, some of them uses others techniques, tha will be described in the sections bellow.
 </div>
 
