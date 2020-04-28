@@ -2,13 +2,16 @@
 A simple 3D L-System that can easily generate trees and bushes
 
 ![Overview](img/ovw.png)
-Fractal trees, generated using the l-systems approach.
+Figure 1: Fractal trees, generated using the l-systems approach.
+
 From left to right: An ordinary tree, a bush, a seaweed, a sympodial tree and a willow.
 
 ## Overview
 
 The common way to model a tree involves manually construction of these and demands high skills and a great amount of time for the person doing this, and, generally, random fluctuations need to be done individually without compromising the tree's species indentity.
 A procedural approach can effectively automate the generation, using predetermined instructions acting on an initial state, we can also include random parameters in the instructions to create variation between the trees.
+
+![](img/gif.gif)
 
 The main objective of this assingment is to use Blender software to create a system for the procedural generation of 3D Trees using the L-Systems approach. To achive this goal, besides the basic L-System concepts, other techniques were also used, some of them are:
 
