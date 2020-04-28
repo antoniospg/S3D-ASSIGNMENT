@@ -232,6 +232,7 @@ $ Reset turtle to vertical
 } End branch without seting radius to 0.
 
 """
+ """ RATIOS ARE ALSO DEFINED IN THE PARSER """
 
 """  EXAMPLES OF SEQUENCES  """
 
@@ -534,11 +535,8 @@ def parser(tree, i, info):
         elif(x[0] == "%"): tree.setW(0)
         
         elif(x[0] == "}"): tree.closeZBranch()
-        
-        
+          
 def run():
-    
-    
     """ DEFINE TYPE OF TREE """
     """
     i = 0: SYMPODIAL TREE
@@ -586,12 +584,3 @@ run()
 
 
 
-
-
-
-
-
-#parser(genWillowSeq(7, 30, 200), tr)
-#parser(genSpiralSeq(100,22,40), tr)
-#parser(genBushSeq(5,22.5,10),tr)
-#parser(genNiceTreeSeq(5,45, 20),tr)
