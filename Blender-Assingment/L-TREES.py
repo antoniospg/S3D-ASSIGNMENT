@@ -568,7 +568,7 @@ def run():
     itr = 6
     
     """ DEFINE STEP """
-    """ 10 is a good value """
+    """ 20 is a good value """
     step = 20
         
     tree = Tree(Turtle(direction, position, right, 0.0), tropism, step)
