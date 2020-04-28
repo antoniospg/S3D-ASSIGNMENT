@@ -12,8 +12,7 @@ import bpy
 
 class Turtle(object):
     #perform the turtle movements
-    
-    #attributes of Turtele class
+    #attributes of Turtle class
     dir = Vector([0.0, 0.0, 1.0])
     pos = Vector([0.0, 0.0, 0.0])
     right = Vector([-1.0, 0.0, 0.0])
