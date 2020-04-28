@@ -27,7 +27,7 @@ This string can be interpreted as a sequence of commands to a turtle, who will m
 
 ```
 Axiom: F
-Rules: (F->FF+[^F&F&F]-[&F^F^F]n[&f&f^f]) 
+Rules: ( F -> FF+[^F&F&F]-[&F^F^F]n[&f&f^f] ) 
 ``` 
 
 The interpretaion for some of the symbols are:
@@ -42,14 +42,14 @@ F(l) or f(l):	 Move turtle forward by l, drawing the tree.
 n(a)		 Roll turtle left by a.
 [ 		 Start branch.
 ```
-Obs: Note that in this grammar a and l are default values.
+Obs: Note that in this grammar, a and l are default values.
 
-![Generation](img/gif.gif "TT")
+
 <div style="float: right">
-    
+![Generation](img/gif.gif "TT") S
 This is the base for the generation of the tree, each model has it's own grammar, with it's own parameters, some of them uses others techniques, tha will be described in the sections bellow.
 </div>
-
+teste
 
 
 
