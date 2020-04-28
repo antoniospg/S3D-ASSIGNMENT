@@ -44,8 +44,10 @@ Obs: Note that in this grammar, a and l are default values.
 
 
 <div style="float: right">
-This is the base for the generation of the tree, each model has it's own grammar, with it's own parameters, some of them uses others techniques, tha will be described in the sections bellow.
 <img src = "img/gif.gif">
+<div>
+This is the base for the generation of the tree, each model has it's own grammar, with it's own parameters, some of them uses others techniques, tha will be described in the sections bellow.
+</div>
 </div>
 teste
 
@@ -54,8 +56,8 @@ teste
 We can set multiple rules for the same symbol, assigning to each one a probability to occur. In this assingment, we introduce this concept to the willow model, defining two different rules for the branching creation, the first one creates a single continous stem, while the other one creates a double stem. The result is shown in the figures bellow:
 
 <div style="float: right">
-<img src = "img/st1.gif" height="321" width="638"> 
-<img src = "img/st2.gif" height="321" width="638"> 
+<img src = "img/st1.png" height="160" width="319"> 
+<img src = "img/st2.png" height="160" width="319"> 
 </div>
 
 
