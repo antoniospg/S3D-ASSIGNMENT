@@ -24,14 +24,11 @@ The fisrt section is dedicated to describe the procedural rules to generate the 
 
 The common base of every system is to define a grammar G = (V, ω, P), where V is a set of symbols that can and cannot be replaced, ω (axiom) is the first sequence of symbols from V and P is the set of rules that rewrite a symbol of V for a sequence of symbols. The sequence starts as a string defined by ω and after each iteration the symbols of that string are replaced according to the rules defined in P.
 This string can be interpreted as a sequence of commands to a turtle, who will move across the screen, drawing the tree. The code bellow shows the rules for the seaweed model shown in the title.
-
 ```
 Axiom: F
 Rules: ( F -> FF+[^F&F&F]-[&F^F^F]n[&f&f^f] ) 
 ``` 
-
 The interpretaion for some of the symbols are:
-
 ```
 F(l) or f(l):	 Move turtle forward by l, drawing the tree.
 +(a):		 Turn turtle left by a.
@@ -39,18 +36,32 @@ F(l) or f(l):	 Move turtle forward by l, drawing the tree.
 &(a):		 Pitch turtle down by a.
 ^(a):		 Pitch turtle up by a.
 /(a):		 Roll turtle right by a.
-n(a)		 Roll turtle left by a.
-[ 		 Start branch.
+n(a):		 Roll turtle left by a.
+[: 		 Start branch.
+]:		 End branch
 ```
 Obs: Note that in this grammar, a and l are default values.
 
 
 <div style="float: right">
-<img src = "img/gif.gif">
 This is the base for the generation of the tree, each model has it's own grammar, with it's own parameters, some of them uses others techniques, tha will be described in the sections bellow.
+<img src = "img/gif.gif">
 </div>
 teste
 
+### Stochastic L-Systems
+
+We can set multiple rules for the same symbol, assigning to each one a probability to occur. In this assingment, we introduce this concept to the willow model, defining two different rules for the branching creation, the first one creates a single continous stem, while the other one creates a double stem. The result is shown in the figures bellow:
+
+<div style="float: right">
+<img src = "img/st1.gif" height="321" width="638"> 
+<img src = "img/st2.gif" height="321" width="638"> 
+</div>
+
+
+### Parametric L-Systems
+
+### Tropism
 
 
 
