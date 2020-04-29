@@ -12,7 +12,8 @@ import bpy
 
 class Turtle(object):
     #perform the turtle movements
-    #attributes of Turtle class
+    
+    #attributes of Turtele class
     dir = Vector([0.0, 0.0, 1.0])
     pos = Vector([0.0, 0.0, 0.0])
     right = Vector([-1.0, 0.0, 0.0])
@@ -107,6 +108,7 @@ class Tree(object):
         #create and bevel the curve
         self.curve = bpy.data.curves.new(name = "Tree",type='CURVE')
         self.curve.dimensions = '3D'
+        self.curve.resolution_u = 4
         self.curve.fill_mode = 'FULL'
         self.curve.bevel_depth = 0.045     
     
@@ -232,12 +234,11 @@ $ Reset turtle to vertical
 } End branch without seting radius to 0.
 
 """
- """ RATIOS ARE ALSO DEFINED IN THE PARSER """
 
 """  EXAMPLES OF SEQUENCES  """
 
 """ SYMPODIAL TREE """
-def genSympodialSeq(itr, step):
+def genSympodialSeq(itr, step, len_radius_const):
     #generate sequence that will move the turtle
     #commands are in the form of a tuples list tuple("symbol",[value1, value2,...])
     #list of commands in the form of [("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[])] 
@@ -246,9 +247,9 @@ def genSympodialSeq(itr, step):
     lsys = []
     
     #AXIOM
-    lsys.extend([("A",[step, 1*step])])
+    lsys.extend([("A",[step, len_radius_const*step])])
     res = []
-    base_w = 1*step
+    base_w = len_radius_const*step
     
     #CONSTANTS
     #contraction ratio 1
@@ -259,6 +260,8 @@ def genSympodialSeq(itr, step):
     a1 = 10
     #branching angle 2
     a2 = 50
+    #principal branching angle
+    ap = 20
     #width decrease rate
     wr = 0.657
     
@@ -272,7 +275,7 @@ def genSympodialSeq(itr, step):
                 l = x[1][0]
                 
                 res += [("!", [w]), ("F", [l]), ("[", []), ("&", [a1]), ("B", [l*r1, w*wr]), ("}", []), ("/", [180]),
-                        ("[", []), ("&", [a2-30]), ("B", [l*r2, w*wr]), ("}", [])]
+                        ("[", []), ("&", [ap]), ("B", [l*r2, w*wr]), ("}", [])]
                         
             elif(x[0] == "B"):
                 w = x[1][1]
@@ -292,7 +295,7 @@ def genSympodialSeq(itr, step):
     return lsys
 
 """ WILLOW """
-def genWillowSeq(itr, step):
+def genWillowSeq(itr, step, len_radius_const):
     #generate sequence that will move the turtle
     #commands are in the form of a tuples list tuple("symbol",[value1, value2,...])
     #list of commands in the form of [("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[])] 
@@ -303,7 +306,7 @@ def genWillowSeq(itr, step):
     #AXIOM
     lsys.extend([("T",[]), ("A",[])])
     res = []
-    base_w = 3*step
+    base_w = len_radius_const*step
     
     #REWRITING
     #repat itr times, changing the values
@@ -342,7 +345,7 @@ def genWillowSeq(itr, step):
     return lsys
 
 """ SEAWEED """
-def genSeaweedSeq(itr, step):
+def genSeaweedSeq(itr, step, len_radius_const):
     #generate sequence that will move the turtle
     #commands are in the form of a tuples list tuple("symbol",[value1, value2,...])
     #list of commands in the form of [("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[])] 
@@ -353,7 +356,7 @@ def genSeaweedSeq(itr, step):
     #AXIOM
     lsys.extend([("F",[step])])
     res = []
-    base_w = 0.5*step
+    base_w = len_radius_const*step
     ang = 22
     
     #REWRITING
@@ -378,7 +381,7 @@ def genSeaweedSeq(itr, step):
     return lsys
 
 """ BUSH """
-def genBushSeq(itr, step):
+def genBushSeq(itr, step, len_radius_const):
     #generate sequence that will move the turtle
     #commands are in the form of a tuples list tuple("symbol",[value1, value2,...])
     #list of commands in the form of [("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[])] 
@@ -389,7 +392,7 @@ def genBushSeq(itr, step):
     #AXIOM
     lsys.extend([("A",[])])
     res = []
-    base_w = 0.8*step
+    base_w = len_radius_const*step
     ang = 22.5
     
     #REWRITING
@@ -426,7 +429,7 @@ def genBushSeq(itr, step):
     return lsys
 
 """ A NICE TREE """
-def genNiceTreeSeq(itr, step):
+def genNiceTreeSeq(itr, step, len_radius_const):
     #generate sequence that will move the turtle
     #commands are in the form of a tuples list tuple("symbol",[value1, value2,...])
     #list of commands in the form of [("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[]), ("",[])] 
@@ -449,7 +452,7 @@ def genNiceTreeSeq(itr, step):
     #AXIOM
     lsys.extend([("*",[1]),("F",[step]), ("/",[45]), ("A",[])])
     res = []
-    base_w = 20*step
+    base_w = len_radius_const*step
     
     #REWRITING
     #repat itr times, changing the values
@@ -481,34 +484,34 @@ def genNiceTreeSeq(itr, step):
     lsys += [("}",[])]
     
     return lsys
-    
+
 """ SEQUENCE INTERPRETER """
 def parser(tree, i, info):
     
     """ RATIOS ARE ALSO DEFINED IN THE FUNCTION """
     if(i == 0):
-        seq = genSympodialSeq(info[0], info[1])
-        tree.stem.turtle.width = info[1]*1
+        seq = genSympodialSeq(info[0], info[1], info[2])
+        tree.stem.turtle.width = info[1]*info[2]
     elif(i == 1):
-        seq = genWillowSeq(info[0], info[1])
-        tree.stem.turtle.width = info[1]*3
+        seq = genWillowSeq(info[0], info[1], info[2])
+        tree.stem.turtle.width = info[1]*info[2]
     elif(i == 2): 
-        seq = genSeaweedSeq(info[0], info[1])
-        tree.stem.turtle.width = info[1]*0.5
+        seq = genSeaweedSeq(info[0], info[1], info[2])
+        tree.stem.turtle.width = info[1]*info[2]
     elif(i == 3): 
-        seq = genBushSeq(info[0], info[1])
-        tree.stem.turtle.width = info[1]*0.8
+        seq = genBushSeq(info[0], info[1], info[2])
+        tree.stem.turtle.width = info[1]*info[2]
     elif(i == 4): 
-        seq = genNiceTreeSeq(info[0], info[1])
-        tree.stem.turtle.width = info[1]*20
-    
+        seq = genNiceTreeSeq(info[0], info[1], info[2])
+        tree.stem.turtle.width = info[1]*info[2]
+
     #transform sequence in steps
     for x in seq:
         ##interpreter rules
         
         if(x[0] == "!"): tree.setW(x[1][0])
         
-        elif(x[0] == "F"): tree.move(x[1][0])
+        elif(x[0] == "F"): tree.move(x[1][0]);
         
         elif(x[0] == "f"): tree.move(x[1][0])
         
@@ -535,8 +538,9 @@ def parser(tree, i, info):
         elif(x[0] == "%"): tree.setW(0)
         
         elif(x[0] == "}"): tree.closeZBranch()
-          
+
 def run():
+    
     """ DEFINE TYPE OF TREE """
     """
     i = 0: SYMPODIAL TREE
@@ -545,7 +549,7 @@ def run():
         3: BUSH
         4: NICE TREE
     """
-    i = 4
+    i = 1
     
     """ DEFINE INITIAL ATTRIBUTES OF THE TURTLE """  
     direction = mathutils.Vector([0.0, 0.0, 1.0])
@@ -553,34 +557,41 @@ def run():
     right = mathutils.Vector([-1.0, 0.0, 0.0])
     
     """ DEFINE TROPISM VECTOR """
-    """ EACH CORDINATE WITH ABSOLUTE VALUE FROM 0 TO 100"""
-    tropism = mathutils.Vector([0.0, 0.0, 00.0])
+    """ EACH CORDINATE WITH ABSOLUTE VALUE FROM 0 TO 100 (SOME, LIKE THE WIDOW, ARE MORE SENSITIVE)"""
+    tropism = mathutils.Vector([-6.5, 0.0, 00.0])
     
     """ DEFINE NUMBER OF ITERATIONS"""
     """
-    MAX ITERATIONS OF EACH TREE:
-        PINE:
+    BEST ITERATIONS OF EACH TREE:
+        SYMPODIAL: 9
         WILLOW: 8
         SEAWEED: 3
-        BUSH: 5
-        NICE TREE: 8   (7-best)
+        BUSH: 4
+        NICE TREE: 7  
     """
-    itr = 6
+    itr = 8
     
     """ DEFINE STEP """
-    """ 20 is a good value """
-    step = 20
+    """ 10 ~ 20 is a good value """
+    step = 10
+    
+    """ DEFINE THE BASE_WIDTH/STEP RATIO """
+    """ 
+    GOOD VALUES
+        SYMPODIAL: 1
+        WILLOW: 3
+        SEAWEED: 0.5
+        BUSH: 0.8
+        NICE TREE: 20  
+    """
+    ratio = 3
         
     tree = Tree(Turtle(direction, position, right, 0.0), tropism, step)
-    parser(tree, i, [itr, step]) 
+    parser(tree, i, [itr, step, ratio]) 
 
     
 
 
 run()
-
-
-
-
 
 
