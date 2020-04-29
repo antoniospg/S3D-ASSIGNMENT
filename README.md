@@ -45,17 +45,15 @@ Obs: Note that in this grammar, a and l are default values.
 
 <div style="float: right">
 <img src = "img/gif.gif">
-<div>
+</div>
 This is the base for the generation of the tree, each model has it's own grammar, with it's own parameters, some of them uses others techniques, tha will be described in the sections bellow.
-</div>
-</div>
 **Figure 2:** Generation of a bush .
 
 ### Stochastic L-Systems
 
 We can set multiple rules for the same symbol, assigning to each one a probability to occur. In this assingment, we introduce this concept to the willow model, defining two different rules for the branching creation, the first one creates a single continous stem, while the other one creates a double stem. The result is shown in the figures bellow:
 
-<div style="float: right">
+<div>
 <img src = "img/st1.png" height="160" width="319"> 
 <img src = "img/st2.png" height="160" width="319"> 
 </div>
@@ -69,13 +67,13 @@ Rules: ( A(l) -> +(90)F(l/2)A(l/2) )
 ```
 In the Sympodial tree model, this was used extensively to shrink the radius and lenght of the further branches.
 
-!()[img/par.png] 
+![](img/par.png) 
 **Figure 4:** Sympodial tree extension.
 
 ### Tropism
 In order to simulate action of external forces like wind or gravity, we implement the tropism vector acting over the tree. It works in a very simple way, rotating the direction of new each branch over the cross product between this direction and the tropism vector. The angle of rotation is defined to be proportional to the modulus of the same cross product.
 
-<div style="float: right">
+<div>
 <img src = "img/trop1.png" height="271" width="236"> 
 <img src = "img/trop2.png" height="271" width="236"> 
 </div>
