@@ -85,7 +85,7 @@ In order to simulate action of external forces like wind or gravity, I implement
 To create the surface I use the Bézier curve from Blender, which require all control points, as well as the bevel radius of these points. Note that after generated, the tree must be manually converted to a mesh in order to achieve better results.
 To get a smoother surface, at each control point one handle was placed in the line that contains the previous segment, an the other handle in the line that contains tha next segment, as shown in the figure bellow:
 
-![bz](bezier.png)
+![bz](/img/bezier.png)
 **Figure 6:** Control points of a segment
 
 ## Things to improve
