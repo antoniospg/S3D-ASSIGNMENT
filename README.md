@@ -6,9 +6,9 @@ A simple 3D L-System that can easily generate trees and bushes
 
 ## Overview
 
-The common way to model a tree involves manually construction of these and demands high skills and a great amount of time for the person doing this, and, generally, random fluctuations need to be done individually without compromising the tree's species indentity.
+The common way to model a tree involves manually construction of these, demanding high skills and a great amount of time for the person doing this, also, generally, random fluctuations need to be done individually without compromising the tree's species indentity.
 A procedural approach can effectively automate the generation, using predetermined instructions acting on an initial state, we can also include random parameters in the instructions to create variation between the trees.
-The main objective of this assingment is to use Blender software to create a system for the procedural generation of 3D Trees using the L-Systems approach. To achive this goal, besides the basic L-System concepts, other techniques were also used, some of them are:
+The main objective of this assingment is to use Blender software to create a system for procedural generation of 3D Trees using the L-Systems approach. To achive this goal, besides the basic L-System concepts, other techniques were also used, some of them are:
 
 * Stochastic rules
 * Parametric rules
@@ -19,8 +19,8 @@ The fisrt section is dedicated to describe the procedural rules to generate the 
 
 ## Generation
 
-The common base of every system is to define a grammar G = (V, ω, P), where V is a set of symbols that can and cannot be replaced, ω (axiom) is the first sequence of symbols from V and P is the set of rules that rewrite a symbol of V for a sequence of symbols. The sequence starts as a string defined by ω and after each iteration the symbols of that string are replaced according to the rules defined in P.
-This string can be interpreted as a sequence of commands to a turtle, who will move across the screen, drawing the tree. The code bellow shows the rules for the seaweed model shown in the title.
+The base of every system is to define a grammar G = (V, ω, P), where V is a set of symbols that can and cannot be replaced, ω (axiom) is the first sequence of symbols from V and P is the set of rules that replace a symbol for a sequence of other symbols. The sequence starts as a string defined by ω and after each iteration the symbols of the current sequence are replaced according to the rules defined in P.
+This string can be interpreted as a sequence of commands to a turtle, which will move across the screen, drawing the tree. The code bellow shows the rules for the seaweed model shown in the title.
 ```
 Axiom: F
 Rules: ( F -> FF+[^F&F&F]-[&F^F^F]n[&f&f^f] ) 
@@ -37,10 +37,9 @@ n(a):		 Roll turtle left by a.
 [: 		 Start branch.
 ]:		 End branch
 ```
-Obs: Note that in this grammar, a and l are default values.
+Obs: Note that in this grammar, a and l are default values and P only has one element.
 
-
-<div style="float: right">
+<div style="float: left">
 <img src = "img/gif.gif">
 </div>
 This is the base for the generation of the tree, each model has it's own grammar, with it's own parameters, some of them uses others techniques, tha will be described in the sections bellow.
@@ -66,11 +65,11 @@ Rules: ( A(l) -> +(90)F(l/2)A(l/2) )
 ```
 In the Sympodial tree model, this was used extensively to shrink the radius and lenght of the further branches.
 
-![](img/par.png) 
+<img src = "img/par.png" height="570" width="500"> 
 **Figure 4:** Sympodial tree extension.
 
 ### Tropism
-In order to simulate action of external forces like wind or gravity, we implement the tropism vector acting over the tree. It works in a very simple way, rotating the direction of new each branch over the cross product between this direction and the tropism vector. The angle of rotation is defined to be proportional to the modulus of the same cross product.
+In order to simulate action of external forces like wind or gravity, I implement the tropism vector acting over the tree. It works in a very simple way, rotating the direction of each new branch over the cross product between its direction and the tropism vector. The angle of rotation is defined to be proportional to the modulus of the same cross product.
 
 <div>
 <img src = "img/trop1.png" height="271" width="236"> 
@@ -80,9 +79,9 @@ In order to simulate action of external forces like wind or gravity, we implemen
 
 ## Modelling 
 To create the surface I use the Bézier curve from Blender, which require all control points, as well as the bevel radius of these points. Note that after generated, the tree must be manually converted to a mesh in order to achieve better results.
-In order to get a smoother surface, at each control point one handle was placed in the line that contains the previous branch, an the other handle in the line that contains tha next segment, shown in the figure bellow:
+In order to get a smoother surface, at each control point one handle was placed in the line that contains the previous segment, an the other handle in the line that contains tha next segment, shown in the figure bellow:
 
-!()[bezier.png]
+![](bezier.png)
 **Figure 6:** Control points of a segment
 
 ## Things to improve
@@ -91,9 +90,11 @@ In order to get a smoother surface, at each control point one handle was placed 
 
 * Add a way for the user to create his own grammar in a more interactive way.
 
-* Convert to mesh automatically 
+* Convert to mesh automatically.
 
-* Implement context sensitive grammars
+* Implement context sensitive grammars.
 
-* Correct bugs that occur when the radius of the curve changes
+* Correct bugs that occur when the radius of the curve changes.
+
+* Implement a better way to control proportionality in order avoid strange looking trees.
 
