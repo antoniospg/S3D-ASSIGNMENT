@@ -45,6 +45,7 @@ Obs: Note that in this grammar, a and l are default values.
 </div>
 This is the base for the generation of the tree, each model has it's own grammar, with it's own parameters, some of them uses others techniques, tha will be described in the sections bellow.
 
+
 **Figure 2:** Generation of a bush .
 
 ### Stochastic L-Systems
