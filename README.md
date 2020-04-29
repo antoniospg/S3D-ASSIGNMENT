@@ -2,7 +2,7 @@
 A simple 3D L-System that can easily generate trees and bushes
 
 ![Overview](img/ovw.png)
-**Figure 1**: Fractal trees, generated using the l-systems approach. From left to right: An ordinary tree, a bush, a seaweed, a sympodial tree and a willow.
+**Figure 1:** Fractal trees, generated using the l-systems approach. From left to right: An ordinary tree, a bush, a seaweed, a sympodial tree and a willow.
 
 ## Overview
 
@@ -49,7 +49,7 @@ Obs: Note that in this grammar, a and l are default values.
 This is the base for the generation of the tree, each model has it's own grammar, with it's own parameters, some of them uses others techniques, tha will be described in the sections bellow.
 </div>
 </div>
-teste
+**Figure 2:** Generation of a bush .
 
 ### Stochastic L-Systems
 
@@ -59,48 +59,44 @@ We can set multiple rules for the same symbol, assigning to each one a probabili
 <img src = "img/st1.png" height="160" width="319"> 
 <img src = "img/st2.png" height="160" width="319"> 
 </div>
-
+**Figure 3:** Different branches of the willow.
 
 ### Parametric L-Systems
+We can also pass arguments through the rules, as shown in this example of a spiral-like quadrangular movement. After each rewriting, the turtle's step decreases in half, causing her to travel less in each movement, converging into the center.
+```
+Axiom: F(10)A(10)
+Rules: ( A(l) -> +(90)F(l/2)A(l/2) ) 
+```
+In the Sympodial tree model, this was used extensively to shrink the radius and lenght of the further branches.
+
+!()[img/par.png] 
+**Figure 4:** Sympodial tree extension.
 
 ### Tropism
+In order to simulate action of external forces like wind or gravity, we implement the tropism vector acting over the tree. It works in a very simple way, rotating the direction of new each branch over the cross product between this direction and the tropism vector. The angle of rotation is defined to be proportional to the modulus of the same cross product.
 
+<div style="float: right">
+<img src = "img/trop1.png" height="271" width="236"> 
+<img src = "img/trop2.png" height="271" width="236"> 
+</div>
+**Figure 5:** Tropism acting over willow and bush
 
+## Modelling 
+To create the surface I use the Bézier curve from Blender, which require all control points, as well as the bevel radius of these points. Note that after generated, the tree must be manually converted to a mesh in order to achieve better results.
+In order to get a smoother surface, at each control point one handle was placed in the line that contains the previous branch, an the other handle in the line that contains tha next segment, shown in the figure bellow:
 
-## Welcome to GitHub Pages
+!()[bezier.png]
+**Figure 6:** Control points of a segment
 
-You can use the force [editor on GitHub](https://github.com/antoniospg/S3D-ASSINGMENT/edit/gh-pages/README.md) to maintain and preview the content for your website in Markdown files.
+## Things to improve
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+* Add a better sequence generator and a better parser. It will be nice if they both use strings to handle the commands.
 
-### Markdown
+* Add a way for the user to create his own grammar in a more interactive way.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+* Convert to mesh automatically 
 
-```markdown
-Syntax highlighted code block
+* Implement context sensitive grammars
 
-# Header 1
-## Header 2
-### Header 3
+* Correct bugs that occur when the radius of the curve changes
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Itali c_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/antoniospg/S3D-ASSINGMENT/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
