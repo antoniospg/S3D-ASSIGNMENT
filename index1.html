@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/S3D-ASSINGMENT/assets/css/style.css?v=b7f488f988a778eeebdd8bfd8374012ba87a46c8" media="screen" type="text/css">
+    <link rel="stylesheet" href="/S3D-ASSINGMENT/assets/css/print.css" media="print" type="text/css">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>L-Trees | S3D-ASSINGMENT</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="L-Trees" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="https://antoniospg.github.io/S3D-ASSINGMENT/" />
+<meta property="og:url" content="https://antoniospg.github.io/S3D-ASSINGMENT/" />
+<meta property="og:site_name" content="S3D-ASSINGMENT" />
+<script type="application/ld+json">
+{"@type":"WebSite","headline":"L-Trees","url":"https://antoniospg.github.io/S3D-ASSINGMENT/","name":"S3D-ASSINGMENT","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <a href="https://antoniospg.github.io/S3D-ASSINGMENT/">
+          <h1>S3D-ASSINGMENT</h1>
+        </a>
+        <h2></h2>
+        
+          <a href="https://github.com/antoniospg/S3D-ASSINGMENT" class="button"><small>View project on</small> GitHub</a>
+        
+        
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1 id="l-trees">L-Trees</h1>
+<p>A simple 3D L-System that can easily generate trees and bushes</p>
+
+<p><img src="/S3D-ASSINGMENT/img/ovw.png" alt="Overview" />
+<strong>Figure 1:</strong> Fractal trees, generated using the L-systems approach. From left to right: An ordinary tree, a bush, a seaweed, a sympodial tree and a willow.</p>
+
+<h2 id="overview">Overview</h2>
+
+<p>The common way to model a tree involves manually construction of them, demanding high skills and a great amount of time for the person doing this, also, generally, random fluctuations need to be done individually without compromising the tree’s species indentity.
+A procedural approach can effectively automate the generation, using predetermined instructions acting on an initial state. We can also include random parameters in the instructions to create variation between trees.</p>
+
+<p>The main objective of this assingment is to use Blender software to create a system for procedural generation of 3D Trees using the L-Systems approach. To achive this goal, besides the basic L-System concepts, other techniques were also used, some of them are:</p>
+
+<ul>
+  <li>Stochastic rules</li>
+  <li>Parametric rules</li>
+  <li>Tropism</li>
+  <li>Bezier curve for the model</li>
+</ul>
+
+<p>The fisrt section is dedicated to describe the procedural rules to generate the tree, while the second one for the surface’s modelling.</p>
+
+<h2 id="generation">Generation</h2>
+
+<p>The base of every system is to define a grammar G = (V, ω, P), where V is a set of symbols that can and cannot be replaced, ω (axiom) is the first sequence of symbols from V and P is the set of rules that replace a symbol for a sequence of other symbols. The sequence starts as a string defined by ω and after each iteration the symbols of the current sequence are replaced according to the rules defined in P.</p>
+
+<p>This string can be interpreted as a sequence of commands to a turtle, which will move across the space, drawing the tree. The code bellow shows the rules for the seaweed model, shown in the title.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Axiom: F
+Rules: ( F -&gt; FF+[^F&amp;F&amp;F]-[&amp;F^F^F]n[&amp;f&amp;f^f] ) 
+</code></pre></div></div>
+<p>The interpretaion for some of the symbols is:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>F(l) or f(l):	 Move turtle forward by l, drawing the tree.
++(a):		 Turn turtle left by a.
+-(a):		 Turn turtle right by a.
+&amp;(a):		 Pitch turtle down by a.
+^(a):		 Pitch turtle up by a.
+/(a):		 Roll turtle right by a.
+n(a):		 Roll turtle left by a.
+[: 		 Start branch.
+]:		 End branch
+</code></pre></div></div>
+<p>Obs: Note that in this grammar, a and l are default values and P only has one element.</p>
+
+<div>
+<img src="img/gif.gif" />
+</div>
+<p><strong>Figure 2:</strong> Generation of a bush.</p>
+
+<p>This is the base for the generation of the tree, each model has it’s own grammar, with it’s own parameters, some of them uses others techniques, tha will be described in the sections bellow.</p>
+
+<h3 id="stochastic-l-systems">Stochastic L-Systems</h3>
+
+<p>We can set multiple rules for the same symbol, assigning to each one a probability to occur. In this assingment, we introduce this concept to the willow model, defining two different rules for the branching creation, the first one creates a single continous stem, while the other one creates a double stem. Both branches are shown in the figures bellow:</p>
+
+<div>
+<img src="img/st1.png" height="160" width="319" /> 
+<img src="img/st2.png" height="160" width="319" /> 
+</div>
+<p><strong>Figure 3:</strong> Different branches of the willow.</p>
+
+<h3 id="parametric-l-systems">Parametric L-Systems</h3>
+<p>We can also pass arguments through the rules, as shown in this example of a spiral-like quadrangular movement. After each rewriting, the turtle’s step decreases in half, causing her to travel less in each movement, converging into the center.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Axiom: F(10)A(10)
+Rules: ( A(l) -&gt; +(90)F(l/2)A(l/2) ) 
+</code></pre></div></div>
+<p>In the Sympodial tree model, this was used extensively to shrink the radius and lenght of the further branches.</p>
+
+<div>
+<img src="img/par.png" height="570" width="500" /> 
+</div>
+<p><strong>Figure 4:</strong> Sympodial tree extension.</p>
+
+<h3 id="tropism">Tropism</h3>
+<p>In order to simulate action of external forces like wind or gravity, I implement the tropism vector acting over the tree. It works in a very simple way, rotating the direction of each new branch over the cross product between its direction and the tropism vector. The angle of rotation is defined being proportional to the modulus of the same cross product.</p>
+
+<div>
+<img src="img/trop1.png" height="271" width="236" /> 
+<img src="img/trop2.png" height="271" width="236" /> 
+</div>
+
+<p><strong>Figure 5:</strong> Tropism acting over willow and bush</p>
+
+<h2 id="modelling">Modelling</h2>
+<p>To create the surface I use the Bézier curve from Blender, which require all control points, as well as the bevel radius of these points. Note that after generated, the tree must be manually converted to a mesh in order to achieve better results.
+To get a smoother surface, at each control point one handle was placed in the line that contains the previous segment, an the other handle in the line that contains tha next segment, as shown in the figure bellow:</p>
+
+<div>
+<img src="img/bezier.png" /> 
+</div>
+<p><strong>Figure 6:</strong> Control points of a segment</p>
+
+<h2 id="things-to-improve">Things to improve</h2>
+
+<ul>
+  <li>
+    <p>Add a better sequence generator and a better parser. It will be nice if they both use strings to handle the commands.</p>
+  </li>
+  <li>
+    <p>Add a way for the user to create his own grammar in a more interactive way.</p>
+  </li>
+  <li>
+    <p>Convert to mesh automatically.</p>
+  </li>
+  <li>
+    <p>Implement context sensitive grammars.</p>
+  </li>
+  <li>
+    <p>Correct bugs that occur in the connection of branches.</p>
+  </li>
+  <li>
+    <p>Implement a better way to control proportionality in order avoid strange looking trees.</p>
+  </li>
+</ul>
+
+
+        </section>
+
+        <aside id="sidebar">
+          
+
+          
+            <p class="repo-owner"><a href="https://github.com/antoniospg/S3D-ASSINGMENT">S3D-ASSINGMENT</a> is maintained by <a href="https://github.com/antoniospg">antoniospg</a>.</p>
+          
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+    
+  </body>
+</html>
