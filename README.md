@@ -1,6 +1,6 @@
 # Lost in the Woods
 
-A simple forest scene with a self-propagating particle system over a mesh.
+A simple forest scene with a self-propagating particle system over the tree's mesh.
 
 ![Overview](img/scene/overview(oc).png)
 
@@ -8,7 +8,9 @@ A simple forest scene with a self-propagating particle system over a mesh.
 
 ## Overview
 
-For this scene, I create a simple forest that a player can navigate through, using the models generated in the last assingment, importing them from Blender to Unity, as well as a particle system that self-progagates through the object's mesh.
+For this scene, my main objective was to create a dark forest with a burning tree that the user can explore throught a player, that has movement like a game character, that is, can move his body, rotate his head, jump and illuminate the scene with a spot light, acting like a flashlight.
+
+Besides being a simple and small environment, the elements were designed to create the sensation that you are actually in a dark-creepy forest, using resources like a black-gray fog, poor illumination and a different skybox, as well as a tree density outside the main trail that the player can walk. 
 
 The scene has three main parts that will be explained above in each topic:
 
@@ -18,10 +20,13 @@ The scene has three main parts that will be explained above in each topic:
 
 ## Particle System
 
-The main idea was to find a simple way to simulate fire propagation for the burning tree using the Unity Script tool with the default particle system. To achieve this, I first create the fire separately, using a fire texture found in the internet, then I set the particle system to emit from a custom mesh. After that, all the work was made in C# script, just cloning the meshe's list of vertices and triangles, and reording these triangles by the y cordinate values. So, each iteraction, triangles are added in ascending order to a empty mesh, propagating from the bottom to the top, as shown in the figure bellow. 
+The first idea to create this was to find a way to simulate fire propagation of a tree, starting from the bottom to the outer branches, activated when the player gets closer to the tree. The final result was fine, but there is some bugs with the fire texture in the tips of the tree, a better implementation of this system was reached using a magical powder instead of fire, the result can be seen above with 2x the normal speed:
 
-![Glow](img/scene/glowtr.gif)
+![Glow](img/scene/glow(r).gif)
 
+I started creating the particle system separately, usign a texture found in internet and configurating the parameters like start size, color, rotation over time, and others. A negative gravity was setted to simulate convection (for the fire) and the shader setted to use a additive particle system.
+
+Unity has the option to set a custom mesh to emit particles by the faces, and this was perfect for the simulation. Using C# script, i first clonned the original mesh of the tree, sort the faces in ascending order by the y cordinate values and each iteraction, in the function Update(), I add a new face from the sorted list to the list of faces that will emit particles. The mesh starts empty and each iteraction a new mesh is created with a newer value of face, the downside of this is that the particle system is denser than normal because the particles from the lastest mesh are still in the scene.
 
 ## Forest
 
@@ -33,13 +38,13 @@ The map was created to induce the player to follow the trail and arrive at the c
 
 ![Overview](img/scene/map.png)
 
-The terrain was made using the Unity Terrain Tool, starting from a plane, the terrain was raised/lowed with different brushes with different sizes, creating patterns for the mountains in the corners and the trails in the middle.
+The terrain was made using the Unity Terrain Tool, starting from a plane, the terrain was raised/lowed with different brushes with different sizes, creating patterns for the mountains in the corners and the trails in the middle. All of playable area was raised softly, the places outside the trails are filled with trees and dead grass.
 
 ![Overview](img/scene/terrain.png)
 
-You can paint trees onto a Terrain similar to painting heighmaps, the 3D models of the past assingment were used here, painting the areas with trees and dead grass. Although these are 3D models Unity uses optimizations like billboarding for distant Trees to maintain good performance.
+You can paint trees onto a Terrain similar to painting heighmaps, the 3D models of the past assingment were used here, to paint the areas with trees and dead grass. Although these are 3D models, Unity uses optimizations like billboarding for distant Trees to maintain good performance.
 
-To add a dark atmosphere to the forest, the skybox was changed to a dark-gray and the directional lighting of the Sun with a intensity value lowed to ensure the use of the flashlight. Besides that, a dark fog was added to mask billboarding and fading trees, as well as contribute to the dark atmosphere. The last feature was the shader of the tree's materials, it was choosen the nature tree soft occlusion bark to use features like ambient occlusion, besides that this showed performance problems and bugs, especially when illuminated with the flashlight.
+To add a dark atmosphere to the forest, the skybox was changed to a dark-gray and the directional lighting of the Sun had it's intensity value lowed to ensure the use of the flashlight. Besides that, a dark fog was added to mask billboarding and fading trees, as well as contribute to the dark atmosphere. The last feature was the shader of the tree's materials, it was choosen the nature tree soft occlusion bark to use features like ambient occlusion, the bad thing of the shader are performance problems and bugs, especially when trees are illuminated with the flashlight.
 
  ![Overview](img/scene/ambient.png)
 
@@ -57,6 +62,21 @@ The main components of the player are listed above:
 
 * A Player control component, to manage collisions and movement. The movement is just like a game, with the W, A, S, D and mouse move to control the body. The flashlight is turned ON/OFF with a right mouse-click and the character can jump by pressing the space bar. 
 
+
+## Demo
+
+A demo can be seen in the link above, built with the Unity WebGL module.
+
+Some instructions:
+
+* To find the big tree, just follow the middle trail.
+* To shown the cursor again press the ESC key.
+* W, A, S,D to move. Mouse to rotate the camera. Right-click of mouse to turn ON/OFF flashlight.
+
+Link:
+
+[DEMO](https://antoniospg.github.io/S3D-ASSINGMENT/SceneDemo.html)
+ 
 
 
 
