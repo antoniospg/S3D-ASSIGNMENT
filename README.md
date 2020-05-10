@@ -1,90 +1,106 @@
-# Lost in the Woods
+# L-Trees
+A simple 3D L-System that can easily generate trees and bushes
 
-A simple forest scene with a self-propagating particle system over the tree's mesh.
-
-![Overview](img/scene/overview(oc).png)
-
-**Figure 1:**An overview of the scene, rendered with a tree soft occlusion shader.
+![Overview](img/ovw.png)
+**Figure 1:** Fractal trees, generated using the L-systems approach. From left to right: An ordinary tree, a bush, a seaweed, a sympodial tree and a willow.
 
 ## Overview
 
-For this scene, my main objective was to create a dark forest with a burning tree that the user can explore throught a player, that has movement like a game character, that is, can move his body, rotate his head, jump and illuminate the scene with a spot light, acting like a flashlight.
+The common way to model a tree involves manually construction of them, demanding high skills and a great amount of time for the person doing this, also, generally, random fluctuations need to be done individually without compromising the tree's species indentity.
+A procedural approach can effectively automate the generation, using predetermined instructions acting on an initial state. We can also include random parameters in the instructions to create variation between trees.
 
-Besides being a simple and small environment, the elements were designed to create the sensation that you are actually in a dark-creepy forest, using resources like a black-gray fog, poor illumination and a different skybox, as well as a tree density outside the main trail that the player can walk. 
+The main objective of this assingment is to use Blender software to create a system for procedural generation of 3D Trees using the L-Systems approach. To achive this goal, besides the basic L-System concepts, other techniques were also used, some of them are:
 
-The scene has three main parts that will be explained above in each topic:
+* Stochastic rules
+* Parametric rules
+* Tropism
+* Bezier curve for the model
 
-* Particle System
-* Forest
-* Player
+The fisrt section is dedicated to describe the procedural rules to generate the tree, while the second one for the surface's modelling.
 
-## Particle System
+## Generation
 
-The first idea to create this was to find a way to simulate fire propagation of a tree, starting from the bottom to the outer branches, activated when the player gets closer to the tree. The final result was fine, but there is some bugs with the fire texture in the tips of the tree, a better implementation of this system was reached using a magical powder instead of fire, the result can be seen above with 2x the normal speed:
+The base of every system is to define a grammar G = (V, ω, P), where V is a set of symbols that can and cannot be replaced, ω (axiom) is the first sequence of symbols from V and P is the set of rules that replace a symbol for a sequence of other symbols. The sequence starts as a string defined by ω and after each iteration the symbols of the current sequence are replaced according to the rules defined in P.
 
-![Glow](img/scene/glow(r).gif)
+This string can be interpreted as a sequence of commands to a turtle, which will move across the space, drawing the tree. The code bellow shows the rules for the seaweed model, shown in the title.
+```
+Axiom: F
+Rules: ( F -> FF+[^F&F&F]-[&F^F^F]n[&f&f^f] ) 
+``` 
+The interpretaion for some of the symbols is:
+```
+F(l) or f(l):	 Move turtle forward by l, drawing the tree.
++(a):		 Turn turtle left by a.
+-(a):		 Turn turtle right by a.
+&(a):		 Pitch turtle down by a.
+^(a):		 Pitch turtle up by a.
+/(a):		 Roll turtle right by a.
+n(a):		 Roll turtle left by a.
+[: 		 Start branch.
+]:		 End branch
+```
+Obs: Note that in this grammar, a and l are default values and P only has one element.
 
-I started creating the particle system separately, usign a texture found in internet and configurating the parameters like start size, color, rotation over time, and others. A negative gravity was setted to simulate convection (for the fire) and the shader setted to use a additive particle system.
+<div>
+<img src = "img/gif.gif">
+</div>
+**Figure 2:** Generation of a bush.
 
-Unity has the option to set a custom mesh to emit particles by the faces, and this was perfect for the simulation. Using C# script, i first clonned the original mesh of the tree, sort the faces in ascending order by the y cordinate values and each iteraction, in the function Update(), I add a new face from the sorted list to the list of faces that will emit particles. The mesh starts empty and each iteraction a new mesh is created with a newer value of face, the downside of this is that the particle system is denser than normal because the particles from the lastest mesh are still in the scene.
+This is the base for the generation of the tree, each model has it's own grammar, with it's own parameters, some of them uses others techniques, tha will be described in the sections bellow.
 
-## Forest
+### Stochastic L-Systems
 
-To create the trees, the models from the previous assingment were textured with a wood texture and their number of triangles decreased to improve performance. Basically a simple commom tree was imported with three distinct variations, as well as a bush scaled down to look like dead grass. 
+We can set multiple rules for the same symbol, assigning to each one a probability to occur. In this assingment, we introduce this concept to the willow model, defining two different rules for the branching creation, the first one creates a single continous stem, while the other one creates a double stem. Both branches are shown in the figures bellow:
 
-![Overview](img/scene/trees.png)
+<div>
+<img src = "img/st1.png" height="160" width="319"> 
+<img src = "img/st2.png" height="160" width="319"> 
+</div>
+**Figure 3:** Different branches of the willow.
 
-The map was created to induce the player to follow the trail and arrive at the center to find the "burning tree", different matterials were used in the trails and in the rest of the terrain to ensure this, as well as invisible planes in the corners, acting like invisible walls, restricting the accesible area.
+### Parametric L-Systems
+We can also pass arguments through the rules, as shown in this example of a spiral-like quadrangular movement. After each rewriting, the turtle's step decreases in half, causing her to travel less in each movement, converging into the center.
+```
+Axiom: F(10)A(10)
+Rules: ( A(l) -> +(90)F(l/2)A(l/2) ) 
+```
+In the Sympodial tree model, this was used extensively to shrink the radius and lenght of the further branches.
 
-![Overview](img/scene/map.png)
+<div>
+<img src = "img/par.png" height="570" width="500"> 
+</div>
+**Figure 4:** Sympodial tree extension.
 
-The terrain was made using the Unity Terrain Tool, starting from a plane, the terrain was raised/lowed with different brushes with different sizes, creating patterns for the mountains in the corners and the trails in the middle. All of playable area was raised softly, the places outside the trails are filled with trees and dead grass.
+### Tropism
+In order to simulate action of external forces like wind or gravity, I implement the tropism vector acting over the tree. It works in a very simple way, rotating the direction of each new branch over the cross product between its direction and the tropism vector. The angle of rotation is defined being proportional to the modulus of the same cross product.
 
-![Overview](img/scene/terrain.png)
+<div>
+<img src = "img/trop1.png" height="271" width="236"> 
+<img src = "img/trop2.png" height="271" width="236"> 
+</div>
 
-You can paint trees onto a Terrain similar to painting heighmaps, the 3D models of the past assingment were used here, to paint the areas with trees and dead grass. Although these are 3D models, Unity uses optimizations like billboarding for distant Trees to maintain good performance.
+**Figure 5:** Tropism acting over willow and bush
 
-To add a dark atmosphere to the forest, the skybox was changed to a dark-gray and the directional lighting of the Sun had it's intensity value lowed to ensure the use of the flashlight. Besides that, a dark fog was added to mask billboarding and fading trees, as well as contribute to the dark atmosphere. The last feature was the shader of the tree's materials, it was choosen the nature tree soft occlusion bark to use features like ambient occlusion, the bad thing of the shader are performance problems and bugs, especially when trees are illuminated with the flashlight.
+## Modelling 
+To create the surface I use the Bézier curve from Blender, which require all control points, as well as the bevel radius of these points. Note that after generated, the tree must be manually converted to a mesh in order to achieve better results.
+To get a smoother surface, at each control point one handle was placed in the line that contains the previous segment, an the other handle in the line that contains tha next segment, as shown in the figure bellow:
 
- ![Overview](img/scene/ambient.png)
+<div>
+<img src = "img/bezier.png"> 
+</div>
+**Figure 6:** Control points of a segment
 
-## Player
+## Things to improve
 
-To allow the user to explore the scene, a player was created to move throught the terrain, as well as interact with it by triggering events, colliding and illuminating areas with a flashlight, which acts like a spotlight. 
+* Add a better sequence generator and a better parser. It will be nice if they both use strings to handle the commands.
 
-![Overview](img/scene/player.png)
+* Add a way for the user to create his own grammar in a more interactive way.
 
-The main components of the player are listed above:
+* Convert to mesh automatically.
 
-* A cylinder to act as the body, it's purpose is just positionate the camera, no renderering or capsule collision are active.
+* Implement context sensitive grammars.
 
-* A camera and a spot light to, respectively, control the viewing and the flashlight direction, both of them are hierarchically connected, because the spotlight must illuminate just the area in front of the player.
+* Correct bugs that occur in the connection of branches.
 
-* A Player control component, to manage collisions and movement. The movement is just like a game, with the W, A, S, D and mouse move to control the body. The flashlight is turned ON/OFF with a right mouse-click and the character can jump by pressing the space bar. 
-
-
-## Demo
-
-A demo can be seen in the link above, built with the Unity WebGL module.
-
-Some instructions:
-
-* To find the big tree, just follow the middle trail.
-* To shown the cursor again press the ESC key.
-* W, A, S,D to move. Mouse to rotate the camera. Right-click of mouse to turn ON/OFF flashlight.
-
-Link:
-
-[DEMO](https://antoniospg.github.io/S3D-ASSINGMENT/SceneDemo.html)
- 
-
-
-
-
-
-
-
-
-
-
+* Implement a better way to control proportionality in order avoid strange looking trees.
 
