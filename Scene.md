@@ -21,8 +21,7 @@ The scene has three main parts that will be explained above in each topic:
 The first idea to create this was to find a way to simulate fire propagation over a tree, starting from the bottom to the outer branches, activated with a trigger when the player gets closer to the tree. The final result was fine, but there are some bugs with the fire texture in the tips of the tree, a better implementation of this system was reached using a glowing powder instead of fire, the result can be seen above with 2x the normal speed:
 
 ![Glow](img/scene/glow(r).gif)
-,
-
+,													,
 **Figure 2:** Particle system with 2x the normal speed.
 
 I started creating the particle system separately, using a texture found on the internet and configuring the parameters like start size, color, rotation over time, and others. A negative gravity was used to simulate convection (for the fire) and the shader set to use an additive particle system.
@@ -39,8 +38,7 @@ To create the trees, the models from the previous assignment were textured with 
 The map was created to induce the player to follow the trail and arrive at the center to find the "burning tree", different materials were used in the trails and in the rest of the terrain to ensure this, as well as invisible planes in the corners, acting like invisible walls, restricting the accessible area.
 
 ![Overview](img/scene/map.png)
-,
-
+,													,
 **Figure 4:** Map's top view.
 
 The terrain was made using the Unity Terrain Tool, starting from a plane, the terrain was raised/lowered with different brushes with different sizes, creating patterns for the mountains in the corners and the trails in the middle. All of the playable areas were raised softly, the places outside the trails are filled with trees and dead grass.
