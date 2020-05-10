@@ -62,7 +62,6 @@ To allow the user to explore the scene, a player was created to move throughout 
 **Figure 7:** Player's components.
 
 The main components of the player are listed above:
-<br/>
 * A cylinder to act as the body, it's purpose is just positioning the camera, no rendering or capsule collision are active.
 
 * A camera and a spotlight to control the viewing and the flashlight direction. Both of them are hierarchically connected because the spotlight must illuminate just the area in front of the player's view.
@@ -74,7 +73,6 @@ The main components of the player are listed above:
 A demo can be seen in the link above, built with the Unity WebGL module. In this example I use the glowing powder instead of fire.
 
 Some instructions:
-<br/>
 * To find the big tree, just follow the middle trail.
 * To show the cursor again, press the ESC key.
 * W, A, S, D to move. Mouse to rotate the camera. Right-click of the mouse to turn ON/OFF flashlight.
