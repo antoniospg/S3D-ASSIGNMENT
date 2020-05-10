@@ -22,6 +22,7 @@ The scene has three main parts that will be explained above in each topic:
 The first idea to create this was to find a way to simulate fire propagation over a tree, starting from the bottom to the outer branches, activated with a trigger when the player gets closer to the tree. The final result was fine, but there are some bugs with the fire texture in the tips of the tree, a better implementation of this system was reached using a glowing powder instead of fire, the result can be seen above with 2x the normal speed:
 
 ![Glow](img/scene/glow(r).gif)
+,
 
 **Figure 2:** Particle system with 2x the normal speed.
 
@@ -61,6 +62,7 @@ To add a dark atmosphere to the forest, the skybox was changed to a dark-gray an
 To allow the user to explore the scene, a player was created to move throughout the terrain, as well as interact with it by triggering events, colliding, and illuminating areas with a flashlight, which acts as a spotlight. 
 
 ![Overview](img/scene/player.png)
+,
 
 **Figure 7:** Player's components.
 
