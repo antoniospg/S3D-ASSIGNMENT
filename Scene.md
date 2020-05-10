@@ -66,7 +66,7 @@ The main components of the player are listed above:
 
 * A camera and a spotlight to control the viewing and the flashlight direction. Both of them are hierarchically connected because the spotlight must illuminate just the area in front of the player's view.
 
-* A Player control component, to manage collisions and movement. The movement is just like a game, with the W, A, S, D, and mouse movements to control the body. The flashlight is turned ON/OFF with right-mouse-click and the character can jump by pressing the space bar. 
+* A Character Controller component, to manage collisions and movement. The movement is just like a game, with the W, A, S, D, and mouse movements to control the body. The flashlight is turned ON/OFF with right-mouse-click and the character can jump by pressing the space bar. 
 
 ## Demo
 
