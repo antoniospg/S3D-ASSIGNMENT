@@ -3,7 +3,6 @@
 A simple forest scene with a self-propagating particle system.
 
 ![Overview](img/scene/overview(oc).png)
-
 **Figure 1:** An overview of the scene, rendered with a tree soft occlusion shader.
 
 ## Overview
@@ -23,7 +22,6 @@ The first idea to create this was to find a way to simulate fire propagation ove
 
 ![Glow](img/scene/glow(r).gif)
 ,
-
 **Figure 2:** Particle system with 2x the normal speed.
 
 I started creating the particle system separately, using a texture found on the internet and configuring the parameters like start size, color, rotation over time, and others. A negative gravity was used to simulate convection (for the fire) and the shader set to use an additive particle system.
@@ -35,26 +33,23 @@ Unity has the option to use a custom mesh to emit particles by the faces, and th
 To create the trees, the models from the previous assignment were textured with a wood texture and their number of triangles decreased to improve performance. A simple common tree was imported with three distinct variations, as well as a bush scaled down to look like dead grass. 
 
 ![Overview](img/scene/trees.png)
-
 **Figure 3:** Trees and grass imported from blender, with a standard render.
 
 The map was created to induce the player to follow the trail and arrive at the center to find the "burning tree", different materials were used in the trails and in the rest of the terrain to ensure this, as well as invisible planes in the corners, acting like invisible walls, restricting the accessible area.
 
 ![Overview](img/scene/map.png)
-
+,
 **Figure 4:** Map's top view.
 
 The terrain was made using the Unity Terrain Tool, starting from a plane, the terrain was raised/lowered with different brushes with different sizes, creating patterns for the mountains in the corners and the trails in the middle. All of the playable areas were raised softly, the places outside the trails are filled with trees and dead grass.
 
 ![Overview](img/scene/terrain.png)
-
 **Figure 5:** Terrain model.
 
 You can paint trees onto a Terrain similar to painting heightmaps, the 3D models of the past assignment were used here, to paint the areas with trees and dead grass. Although these are 3D models, Unity uses optimizations like billboarding for distant Trees to maintain good performance.
 To add a dark atmosphere to the forest, the skybox was changed to a dark-gray and the directional lighting of the Sun had its intensity value lowered to ensure the use of flashlight. Besides that, a dark fog was added to mask billboarding and fading trees, as well as contribute to the dark atmosphere. The last feature was the shader of the tree's material, it was chosen the nature tree soft occlusion bark to use features like ambient occlusion and billboarding, the bad things of the shader are performance problems and bugs, especially when trees are illuminated with the flashlight.
 
  ![Overview](img/scene/ambient.png)
-
 **Figure 6:** Player's view of the forest.
 
 ## Player
@@ -63,7 +58,6 @@ To allow the user to explore the scene, a player was created to move throughout 
 
 ![Overview](img/scene/player.png)
 ,
-
 **Figure 7:** Player's components.
 
 The main components of the player are listed above:
