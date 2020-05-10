@@ -22,6 +22,7 @@ The first idea to create this was to find a way to simulate fire propagation ove
 
 ![Glow](img/scene/glow(r).gif)
 ,
+
 **Figure 2:** Particle system with 2x the normal speed.
 
 I started creating the particle system separately, using a texture found on the internet and configuring the parameters like start size, color, rotation over time, and others. A negative gravity was used to simulate convection (for the fire) and the shader set to use an additive particle system.
@@ -39,6 +40,7 @@ The map was created to induce the player to follow the trail and arrive at the c
 
 ![Overview](img/scene/map.png)
 ,
+
 **Figure 4:** Map's top view.
 
 The terrain was made using the Unity Terrain Tool, starting from a plane, the terrain was raised/lowered with different brushes with different sizes, creating patterns for the mountains in the corners and the trails in the middle. All of the playable areas were raised softly, the places outside the trails are filled with trees and dead grass.
