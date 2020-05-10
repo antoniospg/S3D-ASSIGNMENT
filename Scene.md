@@ -10,7 +10,7 @@ A simple forest scene with a self-propagating particle system.
 For this scene, my main objective was to create a dark forest with a burning tree, that the user can explore using a player that has movement like a game character, that is, can move his body, rotate his head, jump and illuminate the scene with a spotlight, acting as a flashlight.
 <br/>
 Besides being a simple and small environment, the elements were designed to create the sensation that you are actually in a dark-creepy forest, using resources like a black-gray fog, poor illumination, and a night skybox, as well as a tree density outside the main trail that the player can walk. 
-<br/>
+
 The scene has three main parts that will be explained above in each topic:
 * Particle System
 * Forest
