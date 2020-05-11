@@ -1,4 +1,4 @@
-# S3D-ASSINGMENT
+# S3D-ASSIGNMENT
 
 ## Blender Assignment:
 
