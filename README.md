@@ -9,7 +9,7 @@ A simple 3D L-System that can easily generate trees and bushes
 The common way to model a tree involves manually construction of them, demanding high skills and a great amount of time for the person doing this, also, generally, random fluctuations need to be done individually without compromising the tree's species indentity.
 A procedural approach can effectively automate the generation, using predetermined instructions acting on an initial state. We can also include random parameters in the instructions to create variation between trees.
 
-The main objective of this assingment is to use Blender software to create a system for procedural generation of 3D Trees using the L-Systems approach. To achive this goal, besides the basic L-System concepts, other techniques were also used, some of them are:
+The main objective of this assignment is to use Blender software to create a system for procedural generation of 3D Trees using the L-Systems approach. To achive this goal, besides the basic L-System concepts, other techniques were also used, some of them are:
 
 * Stochastic rules
 * Parametric rules
@@ -50,7 +50,7 @@ This is the base for the generation of the tree, each model has it's own grammar
 
 ### Stochastic L-Systems
 
-We can set multiple rules for the same symbol, assigning to each one a probability to occur. In this assingment, we introduce this concept to the willow model, defining two different rules for the branching creation, the first one creates a single continous stem, while the other one creates a double stem. Both branches are shown in the figures bellow:
+We can set multiple rules for the same symbol, assigning to each one a probability to occur. In this assignment, we introduce this concept to the willow model, defining two different rules for the branching creation, the first one creates a single continous stem, while the other one creates a double stem. Both branches are shown in the figures bellow:
 
 <div>
 <img src = "img/st1.png" height="160" width="319"> 
