@@ -77,7 +77,7 @@ Some instructions:
 * To show the cursor again, press the ESC key.
 * W, A, S, D to move. Mouse to rotate the camera. Right-click of the mouse to turn ON/OFF flashlight.
 <br/>
-Link: [DEMO](https://antoniospg.github.io/S3D-ASSINGMENT/SceneDemo)
+Link: [DEMO](https://antoniospg.github.io/S3D-ASSIGNMENT/SceneDemo)
  
 
 
