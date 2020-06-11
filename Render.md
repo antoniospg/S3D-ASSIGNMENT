@@ -30,6 +30,7 @@ For this experiment, I create a simple hologram effect and applied to my tree mo
 <br/>
 **Figure 3:** Shader Graph network.
 <br/>
+<br/>
 ![Overview](img/render/hologram.gif)
 <br/>
 **Figure 4:** Final result.
