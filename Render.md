@@ -25,7 +25,7 @@ Each iteration, when new triangles are added to the custom mesh created via C# s
 
 With Shader Graph it's very simple to get incredible visual results. Instead of writing code for the shader, you can create nodes in a graph network and connecting them to get, in real-time, the desirable result.
 <br /> 
-For this experiment, I create a simple hologram effect and applied it to my tree model, creating some sort of cyberpunk dissolving. The modeling is simple and straightforward, basically just applying in the AlphaChannel a noise texture to delimit clipped parts and a continuous and periodic time-variant value to AlphaClipThreshold . Both of the simple graph network and the final result can be seen below:
+For this experiment, I create a simple hologram effect and applied it to my tree model, creating some sort of cyberpunk dissolving. The modeling is simple and straightforward, basically just applying in the AlphaChannel a noise texture to delimit clipped parts and a continuous periodic time-variant value to AlphaClipThreshold . Both of the simple graph network and the final result can be seen below:
 ![Overview](img/render/shadergraph.png)
 <br/>
 **Figure 3:** Shader Graph network.
@@ -53,7 +53,7 @@ The core that this shader uses is the _CameraOpaqueTexture variable to take what
 * **Heat distortion**
 This shader simulates the distortion effect caused by hot things, in this scenario, a campfire.
 <br/>
-The first step is assigning to a plane a material that contains the shader, this plane needs to be a billboard, that is, always facing the view position, besides that it needs to be rendered on top of everything.
+The first step is assigning to a plane a material that contains the shader, this plane needs to be a billboard (just convert the object origin to view space and then add the vertex position) , that is, always facing the view position, besides that it needs to be rendered on top of everything.
 <br/>
 After that, we need to again use the _CameraOpaqueTexture variable for the same purpose above and distort this texture with a time-variant noise function, created from a noise texture image, and finally resampling the camera texture.
  
