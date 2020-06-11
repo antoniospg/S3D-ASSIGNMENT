@@ -12,20 +12,20 @@ In this project, the Universal Render Pipeline(URP) was used to take advantage o
 
 Taking advantage of the particle system created in the previous assignment, I decided to implement a system that makes just the areas that are emitting particles glow, so the shine effect will start from the bottom and progress to the top.
 <br/> 
-To achieve this, I create a material with the same texture as the tree, but the Emission Map field of it was filled with intense red color, then I create a GameObject with this material, without a mesh associated with it. 
-To get the glow, the post-processing effect bloom was added to the scene with a high threshold to make sure that the effect will be applied just in the intense red color of the material and not in undesirable places.
+To achieve this, I create a material with the same texture as the tree, but the Emission Map field of it was filled with intense red color, then I create a GameObject with this material, but without a mesh associated with it. 
+To obtain the glow, the post-processing effect bloom was added to the scene with a high threshold to make sure that the effect will be applied just in the intense red color of the material and not in undesirable places.
 <br/> 
 Each iteration, when new triangles are added to the custom mesh created via C# script, the "mesh" property of the GameObject is filled with an updated value, creating a progressive illumination effect, which can be seen below:
 
 ![Overview](img/render/glow.gif)
 <br/>
-**Figure 2:** Bloom effect in my particle emmiter model.
+**Figure 2:** Bloom effect in my particle emitter model.
 
 ## Shader Graph 
 
 With Shader Graph it's very simple to get incredible visual results. Instead of writing code for the shader, you can create nodes in a graph network and connecting them to get, in real-time, the desirable result.
 <br /> 
-For this experiment, I create a simple hologram effect and applied it to my tree model, creating some sort of cyberpunk dissolving. The modeling is simple and straightforward, basically just applying a simple time-variant noise to the alpha channel and a time-variant function to the AlphaClipThreshold. Both of the simple graph network and the final result can be seen below:
+For this experiment, I create a simple hologram effect and applied it to my tree model, creating some sort of cyberpunk dissolving. The modeling is simple and straightforward, basically just applying in the AlphaChannel a noise texture to delimit clipped parts and a continuous and periodic time-variant value to AlphaClipThreshold . Both of the simple graph network and the final result can be seen below:
 ![Overview](img/render/shadergraph.png)
 <br/>
 **Figure 3:** Shader Graph network.
@@ -48,6 +48,7 @@ The core that this shader uses is the _CameraOpaqueTexture variable to take what
 ![Overview](img/render/moon.gif)
 <br/>
 **Figure 5:** Moon seen through the glass.
+<br/>
 <br/>
 * **Heat distortion**
 This shader simulates the distortion effect caused by hot things, in this scenario, a campfire.
