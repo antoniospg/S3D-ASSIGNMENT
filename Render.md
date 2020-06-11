@@ -4,18 +4,18 @@
 **Figure 1:** Some results obtained with different techniques 
 ## Overview
 
-The main goal of this assignment is to learn more about rendering, creating different types of effects in Unity and testing the different tools that are provided to the developer, extending the scene from the previous assignment with new visual features.
+The main goal of this assignment is to learn more about rendering, creating different types of effects in Unity, and testing the different tools that are provided to the developer, extending the scene from the previous assignment with new visual features.
 <br/>
-In this project, the Universal Render Pipeline(URP) was used to take advantage of optimizations on lightweight platforms like WebGL, as well as try out the ShaderGraph feature. The experiments were made exploring three main areas: Post-Effects, ShaderGraph and commom CG shaders, for each of these, different visual effects were created, exploring the particularities of each tool.
+In this project, the Universal Render Pipeline(URP) was used to take advantage of optimizations on lightweight platforms like WebGL, as well as try out the ShaderGraph feature. The experiments were made exploring three main areas: Post-Effects, ShaderGraph, and common CG shaders, for each of these, different visual effects were created, exploring the particularities of each tool.
 
 ## Post-Effects
 
-Taking advantage of the particle system created in the previous assignment, I decided to implement a system that make just the areas that are emmiting particles glow, so the shine effect will start from the bottom and progress to the top.
+Taking advantage of the particle system created in the previous assignment, I decided to implement a system that makes just the areas that are emitting particles glow, so the shine effect will start from the bottom and progress to the top.
 <br/> 
-To achieve this, I create a material with the same texture as the tree, but the Emission Map field of it was filled with a intense red color, then I create a GameObject with this material, without a mesh associated to it. 
-To get the glow, the post-processessing effect bloom was added to the scene with a high treshold to make sure that the effect will be applied just in the intense red color of the material and not in undesirable places.
+To achieve this, I create a material with the same texture as the tree, but the Emission Map field of it was filled with intense red color, then I create a GameObject with this material, without a mesh associated with it. 
+To get the glow, the post-processing effect bloom was added to the scene with a high threshold to make sure that the effect will be applied just in the intense red color of the material and not in undesirable places.
 <br/> 
-Each iteraction, when new triangles are added to the custom mesh created via C# script, the "mesh" property of the GameObject is filled with an updated value, creating a progressive illumination effect, which can be seen below:
+Each iteration, when new triangles are added to the custom mesh created via C# script, the "mesh" property of the GameObject is filled with an updated value, creating a progressive illumination effect, which can be seen below:
 
 ![Overview](img/render/glow.gif)
 <br/>
@@ -23,9 +23,9 @@ Each iteraction, when new triangles are added to the custom mesh created via C# 
 
 ## Shader Graph 
 
-With Shader Graph it's very simple to get incredible visual results. Instead of writing code for the shader, you can create nodes in a graph network and connecting them to get, in real time, the desireable result.
+With Shader Graph it's very simple to get incredible visual results. Instead of writing code for the shader, you can create nodes in a graph network and connecting them to get, in real-time, the desirable result.
 <br /> 
-For this experiment, I create a simple hologram effect and applied to my tree model, creating some sort of cyberpunk dissolving. The modelling is simple and straightfoward, both of the simple graph network and final result can be seen above:
+For this experiment, I create a simple hologram effect and applied it to my tree model, creating some sort of cyberpunk dissolving. The modeling is simple and straightforward, basically just applying a simple time-variant noise to the alpha channel and a time-variant function to the AlphaClipThreshold. Both of the simple graph network and the final result can be seen below:
 ![Overview](img/render/shadergraph.png)
 <br/>
 **Figure 3:** Shader Graph network.
@@ -37,19 +37,25 @@ For this experiment, I create a simple hologram effect and applied to my tree mo
 
 ## CG Shader Code
 
-Although Shader Graph is a great tool for creating shaders, Unity has the tools to creating shader codes the old fashion way using HLSL CG, in cases when a low-level programming is required to achieve the desired effect.
+Although Shader Graph is a great tool for shading, Unity still offers the possibility to create shader codes the old fashion way using HLSL CG, being useful in cases when low-level programming is required to achieve the desired effect.
 <br />
-Two effects were made, a stained glass transpent effect and a heat distortion effect.
+Two effects were made, a stained glass transparent effect and a heat distortion effect.
 
 * **Stained Glass**
-The core that this shader uses is the _CameraOpaqueTexture parameter to take what has already been rendered on the screen. The part where the distortion takes place is in the Pixel Shader. Here, a normal map is unpacked and used to offset the UV data of the grab texture.
+This was created by assigning a plane to the material that contains the shader. We need to supply the shader a glass texture (in this case a stained glass texture) and a normal map to offset the uv data.
+<br />
+The core that this shader uses is the _CameraOpaqueTexture variable to take what has already been rendered on the screen. With this texture, we just overlay these pixels with the pixels from the glass texture, adding some noise to look more realistic. 
 ![Overview](img/render/moon.gif)
 <br/>
 **Figure 5:** Moon seen through the glass.
-
+<br/>
 * **Heat distortion**
-
-The distortion effect is achieved by appling a shader to a plane that will billboard that and draw it on top of everything, then grab the camera rendered texture through the _CameraOpaqueTexture parameter, distort the texture sample position and use the distorted position to sample and draw the camera texture.
+This shader simulates the distortion effect caused by hot things, in this scenario, a campfire.
+<br/>
+The first step is assigning to a plane a material that contains the shader, this plane needs to be a billboard, that is, always facing the view position, besides that it needs to be rendered on top of everything.
+<br/>
+After that, we need to again use the _CameraOpaqueTexture variable for the same purpose above and distort this texture with a time-variant noise function, created from a noise texture image, and finally resampling the camera texture.
+ 
 ![Overview](img/render/fire.gif)
 <br/>
 **Figure 5:** Campfire with the distortion effect.
